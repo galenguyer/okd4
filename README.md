@@ -44,3 +44,8 @@ install centos 8.
   for software selection, you can do server or server with gui. i don't like guis so i go without. also install the guest agent because yknow this is a vm
   for the partitioning, use custom partitioning. use the defaults, and then remove the home partition. set the root partition to fill the whole disk. yay space
 
+add epel-release and git and upgrade (won't be much cause it's stream)
+```
+dnf install -y epel-release git
+dnf update -y
+```

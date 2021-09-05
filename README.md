@@ -18,6 +18,7 @@ make sure to give it two network interfaces - one on your public network and one
 
 run through the installation with the default values, they'll work fine.
 
+### configuration, part the first
 once the installation and reboot is complete, hit `8` to hop into a shell. run `pfctl -d` to disable the firewall temporarily. connect to https://[server ip] and complete the setup wizard. the default login credentials are `admin:pfsense`. 
 
 set the hostname to pfsense and the domain to whatever you want, really. i'm going to use `stonewall.lan` in this example. set the primary dns server to `192.168.1.200`.
@@ -29,3 +30,17 @@ under firewall>rules, create an allow rule for whatever port you want to change 
 under system>advanced, change the web admin port to whatever port you opened. restart stuff and connect to the web interface on the new port for the next steps.
 
 under services>dhcp server, change the range so you can give static leases from 192.168.1.200-192.168.1.255. also make sure 192.168.1.200 is set as a dns server.
+
+## okd4-services
+grab the latest centos 8 stream installation iso from [the centos downloads page](https://www.centos.org/download/). 
+
+create a new vm named okd4-services. use the centos iso. ensure it has at least 100gb of storage space (this number may grow). also give it 4 cores and 4gb of ram. also ensure it's on your internal network, not your external one. later we'll set up nat to this vm through pfsense.
+
+from the pfsense web ui, go to services>dhcp server and add a static mapping for the okd4-services vm interface. give it the ip 192.168.1.200 and the hostname okd4-services.
+
+install centos 8. 
+  under networking, enable the interface and set the hostname to okd4-services.
+    you might have to add another dns server actually. i like 1.1.1.1
+  for software selection, you can do server or server with gui. i don't like guis so i go without. also install the guest agent because yknow this is a vm
+  for the partitioning, use custom partitioning. use the defaults, and then remove the home partition. set the root partition to fill the whole disk. yay space
+

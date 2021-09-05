@@ -12,7 +12,7 @@ pfsense is needed for routing within the vms and nat.
 ### installation
 download the latest amd64 dvd iso from [the website](https://www.pfsense.org/download/).
 
-make sure to set the guest os type to other (pfsense is bsd-based).
+make sure to set the guest os type to other (pfsense is bsd-based). 1 cores and 2gb of ram is fine.
 
 make sure to give it two network interfaces - one on your public network and one on the internal vnet.
 

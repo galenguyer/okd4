@@ -32,6 +32,7 @@ under system>advanced, change the web admin port to whatever port you opened. re
 under services>dhcp server, change the range so you can give static leases from 192.168.1.200-192.168.1.255. also make sure 192.168.1.200 is set as a dns server.
 
 ## okd4-services
+### installation
 grab the latest centos 8 stream installation iso from [the centos downloads page](https://www.centos.org/download/). 
 
 create a new vm named okd4-services. use the centos iso. ensure it has at least 100gb of storage space (this number may grow). also give it 4 cores and 4gb of ram. also ensure it's on your internal network, not your external one. later we'll set up nat to this vm through pfsense.
@@ -65,3 +66,28 @@ i'm doing okd-bootstrap, okd-master-{1..3}, and okd-worker-{1..2}. you can drop 
 | okd4-worker-01 | 192.168.1.204 |
 | okd4-worker-02 | 192.168.1.205 |
 | okd4-bootstrap | 192.168.1.210 |
+
+assign all these ip addresses in the pfsense web ui
+
+## ok, back to services
+
+### bind (dns)
+install bind:
+```
+dnf install -y bind bind-utils
+```
+update the files in [okd4-services/etc/named.conf](okd4-services/etc/named.conf) and [okd4-services/named/](okd4-services/named/) as needed, if you changed the node ip addresses in pfsense. you'll probably want to change the base domain as well. the `okd4` just before the base domain is the cluster name, call it whatever you like. double check this because dns will fuck you.
+
+once you've double and triple checked your named configs, copy them into /etc/ on services. i've nicely set up the directory structure for you, literally just copy them over how they are and it should work. then start the dns service
+```
+systemctl enable --now named
+systemctl status named
+```
+
+create firewall rules:
+```
+firewall-cmd --permanent --add-port=53/udp
+firewall-cmd --reload
+```
+
+update your interface to use localhost as your primary dns server with `nmtui` and then restart networking: `systemctl restart NetworkManager`

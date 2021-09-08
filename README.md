@@ -31,6 +31,8 @@ under system>advanced, change the web admin port to whatever port you opened. re
 
 under services>dhcp server, change the range so you can give static leases from 192.168.1.200-192.168.1.255. also make sure 192.168.1.200 is set as a dns server.
 
+under firewall>nat, set up some port forwarding rules for ports like 22, 80, and 443 to 192.168.1.200. this way you can reach your services vm.
+
 ## okd4-services
 ### installation
 grab the latest centos 8 stream installation iso from [the centos downloads page](https://www.centos.org/download/). 

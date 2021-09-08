@@ -133,3 +133,44 @@ systemctl enable --now httpd
 firewall-cmd --permanent --add-port=8080/tcp
 firewall-cmd --reload
 ```
+
+## oc client and installer
+(still on services) grab the latest client and installer from the [okd release page](https://github.com/openshift/okd/releases).
+
+extract them with tar
+
+move the binaries into /usr/local/bin
+```
+mv kubectl oc openshift-install /usr/local/bin/
+```
+verifiy installation and versions:
+```
+oc version
+openshift-install version
+```
+
+if openshift-install gives you the error `openshift-install: error while loading shared libraries: libvirt-lxc.so.0: cannot open shared object file: No such file or directory`, install libvirt:
+```
+dnf install -y libvirt
+```
+
+### set up the installer
+generate an ssh key with `ssh-keygen`
+
+some notes about `installation/install-config.yaml`:
+- documentation is available on [https://docs.okd.io/](https://docs.okd.io/latest/installing/installing_bare_metal/installing-bare-metal.html#installation-bare-metal-config-yaml_installing-bare-metal)
+- you'll have to update the ssh key
+- you don't need to change the pull secret but you can
+- it's really self explanatory, i don't know what else to put here
+
+generate manifests from the install-config:
+```
+openshift-install create manifests --dir=./installation
+```
+
+by default masters are schedulable. you can edit `installation/manifests/cluster-scheduler-02-config.yml` and set mastersSchedulable to false. if you do this, you'll have to edit haproxy.cfg to not route to masters as well.
+
+next create inition configs:
+```
+openshift-install create ignition-configs --dir=./installation
+```

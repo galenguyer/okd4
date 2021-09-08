@@ -49,3 +49,19 @@ add epel-release and git and upgrade (won't be much cause it's stream)
 dnf install -y epel-release git
 dnf update -y
 ```
+
+## bootstrap and masters and workers, oh my
+grab the latest coreos iso from [the coreos download page](https://getfedora.org/coreos/download/).
+
+all these machines will need 4 cores, 16gb of ram, and 120gb of hard drive space. monsters, i know
+
+i'm doing okd-bootstrap, okd-master-{1..3}, and okd-worker-{1..2}. you can drop or add workers as you want
+
+| name | ip |
+| --- | --- |
+| okd-master-01 | 192.168.1.201 |
+| okd-master-02 | 192.168.1.202 |
+| okd-master-03 | 192.168.1.203 |
+| okd-worker-01 | 192.168.1.204 |
+| okd-worker-02 | 192.168.1.205 |
+| okd-bootstrap | 192.168.1.210 |

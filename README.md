@@ -91,3 +91,27 @@ firewall-cmd --reload
 ```
 
 update your interface to use localhost as your primary dns server with `nmtui` and then restart networking: `systemctl restart NetworkManager`
+
+### haproxy
+install haproxy:
+```
+dnf install -y haproxy
+```
+
+make sure [okd4-services/etc/haproxy/haproxy.cfg](okd4-services/etc/haproxy/haproxy.cfg) looks good then copy it to /etc/haproxy/haproxy.cfg
+
+enable and start haproxy:
+```
+setsebool -P haproxy_connect_any 1 # for SELinux
+systemctl enable --now haproxy
+systemctl status haproxy
+```
+
+add firewall rules:
+```
+firewall-cmd --permanent --add-port=6443/tcp
+firewall-cmd --permanent --add-port=22623/tcp
+firewall-cmd --permanent --add-service=80/tcp
+firewall-cmd --permanent --add-service=443/tcp
+firewall-cmd --reload
+```

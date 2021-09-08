@@ -115,3 +115,19 @@ firewall-cmd --permanent --add-service=80/tcp
 firewall-cmd --permanent --add-service=443/tcp
 firewall-cmd --reload
 ```
+
+### apache/httpd
+install httpd:
+```
+dnf install -y httpd
+```
+
+change the listen port to 8080 in `/etc/httpd/conf/httpd.conf`
+
+enable, start, and add firewall rules for httpd
+```
+setsebool -P httpd_read_user_content 1
+systemctl enable --now httpd
+firewall-cmd --permanent --add-port=8080/tcp
+firewall-cmd --reload
+```

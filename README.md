@@ -135,7 +135,9 @@ firewall-cmd --reload
 ```
 
 ## oc client and installer
-(still on services) grab the latest client and installer from the [okd release page](https://github.com/openshift/okd/releases).
+~~(still on services) grab the latest client and installer from the [okd release page](https://github.com/openshift/okd/releases).~~
+
+**DO NOT grab the latest version. it's all fucky wucky. Use [CoreOS 32](https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20201104.3.0/x86_64/fedora-coreos-32.20201104.3.0-live.x86_64.iso) instead.**
 
 extract them with tar
 
@@ -173,4 +175,59 @@ by default masters are schedulable. you can edit `installation/manifests/cluster
 next create inition configs:
 ```
 openshift-install create ignition-configs --dir=./installation
+```
+
+### host installation configs on httpd
+
+make the folder for the files with `mkdir /var/www/html/okd4`
+
+copy the installation folder contents to that folder and make them readable:
+```
+sudo cp -Rv installation/* /var/www/html/okd4/
+sudo chown -Rv apache: /var/www/html/
+sudo chmod -Rv 755 /var/www/html/
+```
+
+test the hosting with `curl localhost:8080/okd4/metadata.json`
+
+download the [fedora coreos bios images](https://getfedora.org/coreos/download/) and shorten the file names:
+
+**NOTE:: Don't use the latest ones. Use the ones specified below. Latest WILL fail as of writing thing.**
+```
+curl https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20201104.3.0/x86_64/fedora-coreos-32.20201104.3.0-metal.x86_64.raw.xz -o /var/www/html/okd4/fcos.raw.xz
+curl https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20201104.3.0/x86_64/fedora-coreos-32.20201104.3.0-metal.x86_64.raw.xz.sig -o /var/www/html/okd4/fcos.raw.xz.sig
+chown -Rv apache: /var/www/html/
+chmod -Rv 755 /var/www/html/
+```
+
+## node ignition
+### bootstrap node
+start the okd4-bootstrap node and hit tab to edit the boot config. 
+
+add the following options:
+```
+coreos.inst.install_dev=/dev/sda coreos.inst.image_url=http://192.168.1.200:8080/okd4/fcos.raw.xz coreos.inst.ignition_url=http://192.168.1.200:8080/okd4/bootstrap.ign
+```
+
+### master nodes
+start the master nodes and hit tab to exit their boot configs
+
+add the following options:
+```
+coreos.inst.install_dev=/dev/sda coreos.inst.image_url=http://192.168.1.200:8080/okd4/fcos.raw.xz coreos.inst.ignition_url=http://192.168.1.200:8080/okd4/master.ign
+```
+
+### worker nodes
+start the worker nodes and hit tab to exit their boot configs
+
+add the following options:
+```
+coreos.inst.install_dev=/dev/sda coreos.inst.image_url=http://192.168.1.200:8080/okd4/fcos.raw.xz coreos.inst.ignition_url=http://192.168.1.200:8080/okd4/worker.ign
+```
+
+the worker nodes getting an internal server error from api-int.okd4.stonewall.lan is expected, don't panic
+
+you can monitor the bootstrap process with
+```
+openshift-install --dir=./installation wait-for bootstrap-complete --log-level=info
 ```

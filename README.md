@@ -59,9 +59,9 @@ i'm doing okd-bootstrap, okd-master-{1..3}, and okd-worker-{1..2}. you can drop 
 
 | name | ip |
 | --- | --- |
-| okd-master-01 | 192.168.1.201 |
-| okd-master-02 | 192.168.1.202 |
-| okd-master-03 | 192.168.1.203 |
-| okd-worker-01 | 192.168.1.204 |
-| okd-worker-02 | 192.168.1.205 |
-| okd-bootstrap | 192.168.1.210 |
+| okd4-master-01 | 192.168.1.201 |
+| okd4-master-02 | 192.168.1.202 |
+| okd4-master-03 | 192.168.1.203 |
+| okd4-worker-01 | 192.168.1.204 |
+| okd4-worker-02 | 192.168.1.205 |
+| okd4-bootstrap | 192.168.1.210 |

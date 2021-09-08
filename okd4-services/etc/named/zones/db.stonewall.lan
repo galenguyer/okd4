@@ -14,24 +14,24 @@ $TTL    604800
 okd4-services.stonewall.lan.            IN      A       192.168.1.200
 
 ; OpenShift Container Platform Cluster - A records
-okd4-bootstrap.lab.stonewall.lan.        IN      A      192.168.1.210
-okd4-master-1.lab.stonewall.lan.         IN      A      192.168.1.201
-okd4-master-2.lab.stonewall.lan.         IN      A      192.168.1.202
-okd4-master-3.lab.stonewall.lan.         IN      A      192.168.1.203
-okd4-worker-1.lab.stonewall.lan.         IN      A      192.168.1.204
-okd4-worker-2.lab.stonewall.lan.         IN      A      192.168.1.205
+okd4-master-01.okd4.stonewall.lan.         IN      A      192.168.1.201
+okd4-master-02.okd4.stonewall.lan.         IN      A      192.168.1.202
+okd4-master-03.okd4.stonewall.lan.         IN      A      192.168.1.203
+okd4-worker-01.okd4.stonewall.lan.         IN      A      192.168.1.204
+okd4-worker-02.okd4.stonewall.lan.         IN      A      192.168.1.205
+okd4-bootstrap.okd4.stonewall.lan.         IN      A      192.168.1.210
 
 ; OpenShift internal cluster IPs - A records
-api.lab.stonewall.lan.      IN    A     192.168.1.200
-api-int.lab.stonewall.lan.  IN    A     192.168.1.200
-*.apps.lab.stonewall.lan.   IN    A     192.168.1.200
-etcd-0.lab.stonewall.lan.   IN    A     192.168.1.201
-etcd-1.lab.stonewall.lan.   IN    A     192.168.1.202
-etcd-2.lab.stonewall.lan.   IN    A     192.168.1.203
-console-openshift-console.apps.lab.stonewall.lan.   IN     A     192.168.1.200
-oauth-openshift.apps.lab.stonewall.lan.             IN     A     192.168.1.200
+api.okd4.stonewall.lan.      IN    A     192.168.1.200
+api-int.okd4.stonewall.lan.  IN    A     192.168.1.200
+*.apps.okd4.stonewall.lan.   IN    A     192.168.1.200
+etcd-0.okd4.stonewall.lan.   IN    A     192.168.1.201
+etcd-1.okd4.stonewall.lan.   IN    A     192.168.1.202
+etcd-2.okd4.stonewall.lan.   IN    A     192.168.1.203
+console-openshift-console.apps.okd4.stonewall.lan.   IN     A     192.168.1.200
+oauth-openshift.apps.okd4.stonewall.lan.             IN     A     192.168.1.200
 
 ; OpenShift internal cluster IPs - SRV records
-_etcd-server-ssl._tcp.lab.stonewall.lan.    86400     IN    SRV     0    10    2380    etcd-0.lab
-_etcd-server-ssl._tcp.lab.stonewall.lan.    86400     IN    SRV     0    10    2380    etcd-1.lab
-_etcd-server-ssl._tcp.lab.stonewall.lan.    86400     IN    SRV     0    10    2380    etcd-2.lab
+_etcd-server-ssl._tcp.okd4.stonewall.lan.    86400     IN    SRV     0    10    2380    etcd-0.lab
+_etcd-server-ssl._tcp.okd4.stonewall.lan.    86400     IN    SRV     0    10    2380    etcd-1.lab
+_etcd-server-ssl._tcp.okd4.stonewall.lan.    86400     IN    SRV     0    10    2380    etcd-2.lab

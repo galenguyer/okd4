@@ -54,7 +54,9 @@ dnf update -y
 ```
 
 ## bootstrap and masters and workers, oh my
-grab the latest coreos iso from [the coreos download page](https://getfedora.org/coreos/download/).
+~~grab the latest coreos iso from [the coreos download page](https://getfedora.org/coreos/download/).~~
+
+**CoreOS 34 seems to have Issues. CoreOS 33 is available here: [https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/33.20210217.3.0/x86_64/fedora-coreos-33.20210217.3.0-live.x86_64.iso](https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/33.20210217.3.0/x86_64/fedora-coreos-33.20210217.3.0-live.x86_64.iso)**
 
 all these machines will need 4 cores, 16gb of ram, and 120gb of hard drive space. monsters, i know
 
@@ -113,8 +115,8 @@ add firewall rules:
 ```
 firewall-cmd --permanent --add-port=6443/tcp
 firewall-cmd --permanent --add-port=22623/tcp
-firewall-cmd --permanent --add-service=80/tcp
-firewall-cmd --permanent --add-service=443/tcp
+firewall-cmd --permanent --add-port=80/tcp
+firewall-cmd --permanent --add-port=443/tcp
 firewall-cmd --reload
 ```
 
@@ -135,9 +137,9 @@ firewall-cmd --reload
 ```
 
 ## oc client and installer
-~~(still on services) grab the latest client and installer from the [okd release page](https://github.com/openshift/okd/releases).~~
+(still on services) grab the latest client and installer from the [okd release page](https://github.com/openshift/okd/releases).
 
-**DO NOT grab the latest version. it's all fucky wucky. Use [CoreOS 32](https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20201104.3.0/x86_64/fedora-coreos-32.20201104.3.0-live.x86_64.iso) instead.**
+**I ran into issues with 4.7.0-0.okd-2021-08-22-163618. I'm about to try 4.6.0-0.okd-2021-02-14-205305**
 
 extract them with tar
 
@@ -163,6 +165,7 @@ some notes about `installation/install-config.yaml`:
 - documentation is available on [https://docs.okd.io/](https://docs.okd.io/latest/installing/installing_bare_metal/installing-bare-metal.html#installation-bare-metal-config-yaml_installing-bare-metal)
 - you'll have to update the ssh key
 - you don't need to change the pull secret but you can
+- baremetal clusters always have a worker count of 0. don't change this
 - it's really self explanatory, i don't know what else to put here
 
 generate manifests from the install-config:
@@ -183,22 +186,24 @@ make the folder for the files with `mkdir /var/www/html/okd4`
 
 copy the installation folder contents to that folder and make them readable:
 ```
-sudo cp -Rv installation/* /var/www/html/okd4/
+sudo cp -Rv installation/* /var/www/html/
 sudo chown -Rv apache: /var/www/html/
 sudo chmod -Rv 755 /var/www/html/
 ```
 
-test the hosting with `curl localhost:8080/okd4/metadata.json`
+test the hosting with `curl localhost:8080/metadata.json`
 
 download the [fedora coreos bios images](https://getfedora.org/coreos/download/) and shorten the file names:
 
 **NOTE:: Don't use the latest ones. Use the ones specified below. Latest WILL fail as of writing thing.**
+
 ```
-curl https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20201104.3.0/x86_64/fedora-coreos-32.20201104.3.0-metal.x86_64.raw.xz -o /var/www/html/okd4/fcos.raw.xz
-curl https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/32.20201104.3.0/x86_64/fedora-coreos-32.20201104.3.0-metal.x86_64.raw.xz.sig -o /var/www/html/okd4/fcos.raw.xz.sig
+curl https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/33.20210217.3.0/x86_64/fedora-coreos-33.20210217.3.0-metal.x86_64.raw.xz -o /var/www/html/okd4/fcos.raw.xz
+curl https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/33.20210217.3.0/x86_64/fedora-coreos-33.20210217.3.0-metal.x86_64.raw.xz.sig -o /var/www/html/okd4/fcos.raw.xz.sig
 chown -Rv apache: /var/www/html/
 chmod -Rv 755 /var/www/html/
 ```
+Fedora 32 might have too much version skew. Trying 33:
 
 ## node ignition
 ### bootstrap node
@@ -231,3 +236,6 @@ you can monitor the bootstrap process with
 ```
 openshift-install --dir=./installation wait-for bootstrap-complete --log-level=info
 ```
+
+## A Note From The Author
+holy shit what the fuck this is so much pain i've been at this for a week. latest versions don't work. the version in craig robinson's guide doesn't work. there's not even error messages. it just doesn't. i'm telling it to do and it's not. why. i should start writing down every version i've tried but i've lost track. it's not even giving me useful error messages. right now zincati is failing and one of the two github issues i've found for this says to try one version higher so i'm going to do that now. but seriously. why doesn't this work. am i cursed? i'll update this once i find a version that does work but if you run into these issues like i have may some god have mercy on your soul. commiting this now and i'll update it once stuff works. yeet.
